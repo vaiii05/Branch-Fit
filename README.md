@@ -1,150 +1,135 @@
 <div align="center">
 
-# 🧭 BranchFit
+# 🎯 BranchFit: ML Engineering Branch Recommender
 
-### *Answer less. Learn more. Find the engineering branch that fits you.*
+**Not sure which engineering branch to choose? Let data decide.**
 
-An adaptive, ML-powered questionnaire that recommends the right engineering branch, choosing each next question based on your previous answers.
-
-<br>
+[**🌐 Live Demo**](https://branchfit1.onrender.com)
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![Render](https://img.shields.io/badge/Deployed_on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
-
-[🚀 **Live Demo**](https://branchfit1.onrender.com/) · [📖 Setup Guide](SETUP_INSTRUCTIONS.md) · [🐛 Report Bug](../../issues)
-
-<br>
-
-<img src="docs/screenshots/hero.png" alt="BranchFit dashboard" width="85%">
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 </div>
 
 ---
 
-## ✨ Highlights
+## 📌 The Problem
 
-| | Feature | Description |
-|---|---|---|
-| 🧠 | **Adaptive Questioning** | Every answer reshapes the next question using information gain and uncertainty sampling |
-| 🎯 | **Two Test Modes** | A general test across all branches, or a focused suitability test for one branch |
-| ⚡ | **Early Stopping** | Ends as soon as the model reaches 80% confidence, with no filler questions |
-| 📄 | **PDF Reports** | Download your results and top recommendations |
-| 📊 | **History & Admin Analytics** | Track past tests, with an admin dashboard for aggregate insights |
-| 🔐 | **Secure Accounts** | Registration, login and hashed passwords backed by MongoDB Atlas |
+Choosing an engineering branch is one of the biggest decisions a student makes, and it's often based on trends, peer pressure or guesswork.
 
----
+**BranchFit** takes a student's academic profile, skills and interests and uses a trained **Random Forest classifier** to recommend the branch that fits best.
 
-## 🧬 How It Works
+## ✨ Features
 
-```mermaid
-flowchart LR
-    A[10 Screening<br>Questions] --> B[Random Forest<br>Predicts Branch Probabilities]
-    B --> C{Confidence<br>≥ 80%?}
-    C -- No --> D[Select Most Informative<br>Next Question]
-    D --> B
-    C -- Yes --> E[🎓 Final Recommendation<br>+ PDF Report]
-```
+- 🎓 Input form capturing academic scores, interests and skills
+- 🤖 ML-powered branch recommendation in seconds
+- 📊 Model accuracy of **~87%** on held-out test data
+- 💾 Responses stored in MongoDB for analysis and retraining
+- 🌐 Deployed live on Render, no setup needed to try it
 
-1. **Screen**: 10 initial Likert-scale questions (1–5).
-2. **Predict**: a Random Forest returns a probability for each of 5 branches.
-3. **Adapt**: `TrueAdaptiveSystem` ranks the remaining question pool by expected information gain.
-4. **Conclude**: the test stops at the confidence threshold or the question cap.
+## 🧠 The ML Model
 
-### 🎓 Branches Covered
-`Computer Engineering` · `EXTC` · `Electrical` · `Information Technology / CSE` · `Mechanical`
-
----
-
-## 🤖 The Model
-
-| | |
+| Item | Details |
 |---|---|
-| **Algorithm** | Random Forest Classifier (100 trees) |
-| **Preprocessing** | StandardScaler |
-| **Dataset** | 1,000 balanced, augmented responses (200 per branch) |
-| **Features** | 60 Likert-scale questions |
-| **Accuracy** | `<XX>%` ← update from `retrain_model.py` |
+| Algorithm | Random Forest Classifier (scikit-learn) |
+| Task | Multi-class classification (recommended branch) |
+| Accuracy | **~87%** |
+| Pipeline | Data cleaning → encoding → train/test split → training → evaluation → serialization |
 
----
+**How it works:**
+
+```
+Student input → Preprocessing & encoding → Random Forest model → Recommended branch
+                                                                       ↓
+                                                             Stored in MongoDB
+```
 
 ## 🛠️ Tech Stack
 
-<table>
-<tr><td><b>Backend</b></td><td>Python · Flask · Flask-Login · Flask-WTF</td></tr>
-<tr><td><b>Machine Learning</b></td><td>scikit-learn · NumPy · pandas · joblib</td></tr>
-<tr><td><b>Database</b></td><td>MongoDB Atlas (PyMongo)</td></tr>
-<tr><td><b>Reports</b></td><td>ReportLab</td></tr>
-<tr><td><b>Frontend</b></td><td>Jinja2 · Bootstrap · Font Awesome</td></tr>
-<tr><td><b>Deployment</b></td><td>Gunicorn · Render</td></tr>
-</table>
+| Layer | Technology |
+|---|---|
+| Language | Python |
+| Web framework | Flask |
+| ML | scikit-learn, pandas, NumPy |
+| Database | MongoDB |
+| Frontend | HTML, CSS, JavaScript (Jinja templates) |
+| Deployment | Render |
 
----
+## 🚀 Run Locally
 
-## 🚀 Getting Started
+**Prerequisites:** Python 3.9+, pip, and a MongoDB instance (local or Atlas).
 
 ```bash
-# 1. Clone
-git clone <repo-url> && cd "branch fit"
+# 1. Clone the repository
+git clone https://github.com/vaiii05/Branch-Fit.git
+cd Branch-Fit
 
-# 2. Install
+# 2. Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
-
-# 3. Configure
-cp .env.example .env
-
-# 4. Run
-python app.py        # → http://localhost:5000
 ```
 
-<details>
-<summary><b>⚙️ Environment variables</b></summary>
+**Environment variables:** create a `.env` file in the project root:
 
 ```env
+MONGO_URI=your_mongodb_connection_string
 SECRET_KEY=your_secret_key
-MONGO_URI=your_mongodb_atlas_uri
-ADMIN_USERNAME=your_admin_user
-ADMIN_PASSWORD=your_admin_password
 ```
-</details>
 
-<details>
-<summary><b>🔁 Retrain the model</b></summary>
+**Start the app:**
 
 ```bash
-python retrain_model.py
+python app.py
 ```
-</details>
 
----
+Open **http://127.0.0.1:5000** 🎉
 
 ## 📁 Project Structure
 
 ```
-branch-fit/
-├── app.py                       # Routes: auth, tests, results, admin
-├── adaptive_system_v2.py        # Adaptive question engine
-├── retrain_model.py             # Training pipeline
-├── balanced_dataset_augmented.csv
-├── branchfit_questions_final.xlsx
-├── adaptive_questions.json
-├── model.pkl · scaler.pkl
-└── templates/ · static/
+Branch-Fit/
+├── app.py              # Flask application and routes
+├── model/              # Trained Random Forest model and training code
+├── templates/          # HTML templates
+├── static/             # CSS, JS, images
+├── requirements.txt
+└── README.md
 ```
 
----
+<!--
+## 📸 Screenshots
+Add images to a docs/ folder, then uncomment:
+
+| Input Form | Recommendation |
+|---|---|
+| ![Form](docs/form.png) | ![Result](docs/result.png) |
+-->
 
 ## 🗺️ Roadmap
-- [ ] Persist test sessions in MongoDB
-- [ ] Train on real student responses
-- [ ] Explainability: show *why* a branch was recommended
+
+- [ ] Add explainability: show which factors drove each recommendation
+- [ ] Expand the dataset and compare against Gradient Boosting and XGBoost
+- [ ] Show top-3 branches with confidence scores
+- [ ] Add a feedback loop to retrain on real outcomes
+
+## 👥 Team
+
+Built as a group mini project at Fr. CRIT, Vashi.
+
+- **Vaibhavi Rai** ([@vaiii05](https://github.com/vaiii05))
+- **Ashley Fernandes** ([@morethanashley](https://github.com/morethanashley))
+- **Shivam Kshirsagar**
+- **Ishwari Shinde** ([@Ishwari2010](https://github.com/Ishwari2010))
+
+## 📬 Contact
+
+**Vaibhavi Rai** · [GitHub](https://github.com/vaiii05) · [LinkedIn]([https://linkedin.com/in/your-id](https://www.linkedin.com/in/vaibhavi-rai-2b6110357/)) · vaibhavii.0515@gmail.com
 
 ---
-
-<div align="center">
-
-**Built by [Vaibhavi Rai](https://github.com/vaiii05)** · ⭐ Star this repo if it helped you!
-
-</div>
+<div align="center">⭐ If you found this useful, give it a star!</div>
